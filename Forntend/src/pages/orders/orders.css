@@ -1,0 +1,35 @@
+.danger-list li {
+    border: 1px solid red; /* Add a red border to each <li> */
+    padding: 10px; /* Add some padding for better visibility */
+    margin-bottom: 5px; /* Add some space between list items */
+    color: red; /* Change the text color to red */
+    list-style-type: none; /* Remove default list styling */
+    background-color: #ffe6e6; /* Light red background for better visibility */
+    border-radius: 5px; /* Slightly round the corners */
+  }
+  
+
+  .success-message {
+    color: green; /* Change the text color to green */
+    background-color: #e6ffe6; /* Light green background for better visibility */
+    border: 1px solid green; /* Add a green border */
+    padding: 10px; /* Add some padding for better visibility */
+    border-radius: 5px; /* Slightly round the corners */
+    font-weight: bold; /* Make the text bold */
+  }
+  
+
+  /* Style for the button in its normal state */
+button {
+    cursor: pointer; /* Change cursor to pointer */
+  }
+  
+  /* Style for the button when it is disabled */
+  button:disabled,
+  button.disabled-button {
+    background-color: #d3d3d3; /* Light gray background */
+    color: #a9a9a9; /* Gray text color */
+    cursor: not-allowed; /* Change cursor to not-allowed */
+    box-shadow: none; /* Remove shadow */
+  }
+  
