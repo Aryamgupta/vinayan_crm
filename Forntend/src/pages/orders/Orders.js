@@ -75,30 +75,38 @@ const Orders = () => {
             className="border-t-2 border-[#fa983d] rounded-lg shadow-lg bg-white cursor-pointer"
             onClick={() => fetchOrderData(order._id)}
           >
-            <div className="p-4">
-              <div className="text-md gap-4 font-semibold">
-                <span style={{ fontWeight: "bold", color: "orange" }}>
-                  Customer Name:
-                </span>
-                <span style={{ color: "gray", fontSize: "small" }}>
-                  {order.customerName}
-                </span>
+            <div className="p-4 border border-gray-200 rounded-md relative">
+              
+              <div className="absolute top-0 right-0 bg-yellow-500 text-white px-2 py-1 rounded-tr-md rounded-bl-md text-xs font-semibold">
+                {order.status}
               </div>
+
+              
               <div className="text-md gap-4 font-semibold">
-                <span style={{ fontWeight: "bold", color: "orange" }}>
-                  Product Name:
-                </span>
-                <span style={{ color: "gray", fontSize: "small" }}>
-                  {order.productDetails.productName}
-                </span>
-              </div>
-              <div className="text-md gap-4 font-semibold">
-                <span style={{ fontWeight: "bold", color: "orange" }}>
-                  Order Quantity:
-                </span>
-                <span style={{ color: "gray", fontSize: "small" }}>
-                  {order.productQuantity}
-                </span>
+                <div>
+                  <span className="font-bold text-orange-500">
+                    Customer Name:{" "}
+                  </span>
+                  <span className="text-gray-500 text-sm">
+                    {" "}{order.customerName}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-orange-500">
+                    Product Name:
+                  </span>
+                  <span className="text-gray-500 text-sm">
+                    {order.productDetails.productName}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-orange-500">
+                    Order Quantity:
+                  </span>
+                  <span className="text-gray-500 text-sm">
+                    {order.productQuantity}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

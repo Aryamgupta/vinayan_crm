@@ -10,8 +10,9 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
     fetchCompleteTable,
     formatDate,
     formatToRupees,
+    orders,
+    setOrders,
   } = AppState();
-  const [isEditing, setIsEditing] = useState(false);
   const [visibleTable, setVisibleTable] = useState("");
   const [value, setValue] = useState(0);
   const [currentNumber, setCurrentNumber] = useState(1);
@@ -33,12 +34,23 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
     setExtraMaterialEdit(!extraMaterialEdit);
   };
 
+
+  const printIframe = (id) => {
+    const iframe = document.frames ? document.frames[id] : document.getElementById(id);
+    const iframeWindow = iframe.contentWindow || iframe;
+
+    iframe.focus();
+    iframeWindow.print();
+
+    return false;
+  };
+
   useEffect(() => {
     fetchCompleteTable();
     if (selectedOrder.extraMaterialNeeded.length != 0) {
       setExtraMaterialEdit(false);
     }
-    console.log(listedMaterials);
+    handleButtonClick("extraMaterials");
   }, []);
 
   useEffect(() => {
@@ -100,7 +112,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
       .put(
         `http://localhost:5000/api/order/calculateOrderCost/${selectedOrder._id}`,
         {
-          otherCost: extraCost,
+          otherCost: Number(extraCost),
         },
         config
       )
@@ -114,6 +126,10 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
   };
 
   const checkInventaryStatus = function () {
+    if (selectedOrder.materialAlloted) {
+      handleButtonClick("checkDetails");
+      return;
+    }
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -157,7 +173,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
       .then((response) => {
         console.log(response);
         if (response.status == 200) {
-          selectedOrder(response.data);
+          setSelectedOrder(response.data);
           setAllotStatus("Materials Alloted SuccessFully !!");
         } else {
           setAllotStatus(response.data.message);
@@ -214,7 +230,6 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
       },
     };
 
-    // // API call to save data
     axios
       .put(
         `http://localhost:5000/api/order/addExtraMaterials/${selectedOrder._id}`,
@@ -228,6 +243,54 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
       .catch((error) => {
         console.error("Error saving data:", error);
       });
+  };
+
+  const markCompleteStatus = async function () {
+    if (!selectedOrder.materialAlloted) {
+      return;
+    }
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        token: `${localStorage.getItem("token")}`,
+      },
+    };
+
+    axios
+      .put(
+        `http://localhost:5000/api/order/markCompleted/${selectedOrder._id}`,
+        {},
+        config
+      )
+      .then((response) => {
+        setSelectedOrder(response.data);
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+      });
+  };
+
+  const downLoadSummary = async function () {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        token: `${localStorage.getItem("token")}`,
+      },
+    };
+    axios
+      .get(
+        `http://localhost:5000/api/order/${selectedOrder._id}`,
+        config
+      )
+      .then((response) => {
+        setSelectedOrder(response.data);
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+      });
+
+    printIframe("print");
   };
 
   return (
@@ -274,6 +337,14 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                       {formatDate(selectedOrder.orderStartDate)}
                     </span>
                   </h1>
+                  {selectedOrder.status === "Completed" && (
+                    <h1 className="text-sm font-bold">
+                      Order Complete Date:
+                      <span className="text-sm text-orange-500 ml-4">
+                        {formatDate(selectedOrder.orderCompleteDate)}
+                      </span>
+                    </h1>
+                  )}
                 </div>
                 <div className="flex gap-5 mb-4"></div>
                 <h1 className="text-lg font-bold text-center py-4 border-b border-gray-300">
@@ -355,7 +426,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                         />
                       ) : (
                         <span className="text-sm text-orange-500 ml-4">
-                          {extraCost}
+                          {formatToRupees(extraCost)}
                         </span>
                       )}
                       <button
@@ -379,47 +450,79 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                   </h2>
                   <div>
                     <div className="flex justify-end gap-5">
-                      <button
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold shadow-lg"
-                        onClick={() => handleButtonClick("extraMaterials")}
-                      >
-                        Add Extra Materials
-                      </button>
-                      <button
-                        className="px-4 py-2 border text-white rounded-lg font-semibold shadow-lg"
-                        onClick={() => checkInventaryStatus()}
-                      >
-                        Check Inventary Status
-                      </button>
-                      <button
-                        className={`px-4 py-2 bg-[#fa983d] text-white rounded-lg font-semibold shadow-lg ${
-                          selectedOrder.inventarStatus.length !== 0
-                            ? "disabled-button"
-                            : ""
-                        }`}
-                        onClick={() => allotMaterials()}
-                        disabled={selectedOrder.inventarStatus.length !== 0}
-                      >
-                        Allot Materials
-                      </button>
+                      {selectedOrder.status !== "Completed" && (
+                        <button
+                          className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold shadow-lg"
+                          onClick={() => handleButtonClick("extraMaterials")}
+                        >
+                          Add Extra Materials
+                        </button>
+                      )}
+                      {selectedOrder.status !== "Completed" && (
+                        <button
+                          className={`px-4 py-2 border text-white rounded-lg font-semibold shadow-lg ${
+                            selectedOrder.status === "Completed"
+                              ? "disabled-button"
+                              : ""
+                          }`}
+                          onClick={() => checkInventaryStatus()}
+                          disabled={selectedOrder.status === "Completed"}
+                        >
+                          Check Inventary Status
+                        </button>
+                      )}
+                      {selectedOrder.status !== "Completed" &&
+                        selectedOrder.inventarStatus.length === 0 && (
+                          <button
+                            className={`px-4 py-2 bg-[#fa983d] text-white rounded-lg font-semibold shadow-lg ${
+                              selectedOrder.inventarStatus.length !== 0 ||
+                              selectedOrder.materialAlloted
+                                ? "disabled-button"
+                                : ""
+                            }`}
+                            onClick={() => allotMaterials()}
+                            disabled={
+                              selectedOrder.inventarStatus.length !== 0 ||
+                              selectedOrder.materialAlloted
+                            }
+                          >
+                            {selectedOrder.materialAlloted
+                              ? "Materials Alloted"
+                              : "Allot Materials"}
+                          </button>
+                        )}
                     </div>
 
                     {visibleTable === "extraMaterials" && (
                       <div>
-                        <button
-                          onClick={() => {
-                            handleEditMaterial();
-                          }}
+                        <div
                           style={{
-                            width: "100px",
-                            height: "40px",
-                            backgroundColor: "Red",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
                           }}
                         >
-                          {extraMaterialEdit ? "Save" : "Edit"}
-                        </button>
+                          {selectedOrder.status !== "Completed" && (
+                            <button
+                              onClick={() => {
+                                handleEditMaterial();
+                              }}
+                              style={{
+                                width: "100px",
+                                height: "40px",
+                                backgroundColor: "Red",
+                              }}
+                            >
+                              {extraMaterialEdit ? "Save" : "Edit"}
+                            </button>
+                          )}
+                        </div>
                         {!extraMaterialEdit ? (
                           <table className="materials-table">
+                            <caption class="text-lg font-semibold text-center">
+                              Extra Materials List
+                            </caption>
                             <thead>
                               <tr>
                                 <th>Material ID</th>
@@ -440,71 +543,79 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                             </tbody>
                           </table>
                         ) : (
-                          <div className="materialATble  mb-4">
-                            <h2>Select Materials And Quantity</h2>
-                            <div>
-                              <form>
-                                <table>
-                                  <thead>
-                                    <tr>
-                                      <th>Select</th>
-                                      <th>Material</th>
-                                      <th>Quantity</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {materials.map((material) => (
-                                      <tr key={material._id}>
-                                        <td>
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              selectedMaterials[material._id] ||
-                                              false
-                                            }
-                                            onChange={() =>
-                                              handleCheckboxChange(material._id)
-                                            }
-                                          />
-                                        </td>
-                                        <td>{material.materialName}</td>
-                                        <td>
-                                          <input
-                                            type="number"
-                                            value={material.materialQuantity}
-                                            onChange={(e) =>
-                                              handleQuantityChange(
-                                                material._id,
-                                                e.target.value
-                                              )
-                                            }
-                                            disabled={
-                                              !selectedMaterials[
-                                                material._id
-                                              ] || false
-                                            }
-                                            min={0}
-                                          />
-                                        </td>
+                          selectedOrder.status !== "Completed" && (
+                            <div className="materialATble  mb-4">
+                              <div>
+                                <form>
+                                  <table>
+                                    <caption class="text-lg font-semibold text-center">
+                                      Select Materials And Quantity
+                                    </caption>
+                                    <thead>
+                                      <tr>
+                                        <th>Select</th>
+                                        <th>Material</th>
+                                        <th>Quantity</th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </form>
+                                    </thead>
+                                    <tbody>
+                                      {materials.map((material) => (
+                                        <tr key={material._id}>
+                                          <td>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                selectedMaterials[
+                                                  material._id
+                                                ] || false
+                                              }
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  material._id
+                                                )
+                                              }
+                                            />
+                                          </td>
+                                          <td>{material.materialName}</td>
+                                          <td>
+                                            <input
+                                              type="number"
+                                              value={material.materialQuantity}
+                                              onChange={(e) =>
+                                                handleQuantityChange(
+                                                  material._id,
+                                                  e.target.value
+                                                )
+                                              }
+                                              disabled={
+                                                !selectedMaterials[
+                                                  material._id
+                                                ] || false
+                                              }
+                                              min={0}
+                                            />
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </form>
+                              </div>
                             </div>
-                          </div>
+                          )
                         )}
                       </div>
                     )}
 
                     {visibleTable === "checkDetails" && (
                       <div className="w-full top-10 left-0 mt-2 p-2 border rounded-lg shadow-lg bg-white z-10">
-                        <p>Here are the details of available inventary...</p>
+                        {/* <p>Here are the details of available inventary...</p> */}
                         {selectedOrder.inventarStatus.length == 0 ? (
                           <p className="success-message">
                             {" "}
-                            All Materials are available in Inventary , you can
-                            allocate materials
+                            {selectedOrder.materialAlloted
+                              ? "Materials Already Alloted"
+                              : "All Materials are available in Inventary , you can allocate materials"}
                           </p>
                         ) : (
                           <ul className="danger-list">
@@ -515,7 +626,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                         )}
                       </div>
                     )}
-
+                    {console.log(selectedOrder.materialAlloted)}
                     {visibleTable === "allotMaterials" && (
                       <div className="w-full top-10 left-0 mt-2 p-2 border rounded-lg shadow-lg bg-white z-10">
                         {selectedOrder.materialAlloted ? (
@@ -533,9 +644,46 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                   </div>
                 </div>
               </div>
+              <div className="mt-4">
+                <div className="flex flex-col">
+                  <div>
+                    {selectedOrder.materialAlloted && (
+                      <div className="flex justify-end gap-5">
+                        {selectedOrder.status === "Completed" && (
+                          <button
+                            className={`px-4 py-2 rounded-lg font-semibold shadow-lg `}
+                            onClick={() => downLoadSummary()}
+                          >
+                            Download Summary
+                          </button>
+                        )}
+                        <button
+                          className={`px-4 py-2 rounded-lg font-semibold shadow-lg ${
+                            selectedOrder.status === "Completed"
+                              ? "bg-green-500 text-white"
+                              : "bg-yellow-400"
+                          } ${
+                            selectedOrder.status === "Completed"
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                          onClick={() => markCompleteStatus()}
+                          disabled={selectedOrder.status === "Completed"}
+                        >
+                          {selectedOrder.status === "Completed"
+                            ? "Order Completed"
+                            : "Complete Order"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
             <button
               onClick={() => {
+                let orr = orders.filter((order)=>order._id !== selectedOrder._id); 
+                setOrders([...orr,selectedOrder]);
                 setSelectedOrder(null);
               }}
               style={{
@@ -565,6 +713,379 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
           </div>
         }
       </div>
+
+      <iframe
+            id="print"
+            srcDoc={`<!DOCTYPE html>
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Order Summary</title>
+                <style>
+                  body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f8f8f8;
+                  }
+                  
+            .App {
+                text-align: center;
+              width: 900px;
+              padding:30px;
+                margin:auto;
+              }
+              .first-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              }
+              .order-summary {
+                flex: 1;
+              }
+              .print-button {
+                margin-left: auto;
+              }
+              .order-summary {
+                display: flex;
+                flex-direction: row;
+                align-items: end;
+              }
+              .print-button {
+                flex-shrink: 0;
+              }
+            
+              .order-summaryy{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+              }
+            
+              .order-summaryy img {
+                max-width: 100px;
+                margin-right: 20px;
+                flex: row;
+            }
+            .print-button{
+             padding:5px;
+              text-align: end;
+              font-weight: 800;
+              border-radius: 15px;
+            }
+             
+              .main-heading{
+                font-size: 14px;
+              text-align: start;
+              padding-left: 60%;
+              }
+            .Date-Main{
+              font-size: 15px;
+              text-align: center;
+              border-bottom: 1px solid gray;
+              width:23%;
+            }
+              .pro-head{
+                text-align: start;
+              } 
+            .sub-heading{
+              font-size: 16px;
+              font-weight: 500;
+             text-align: start;
+            margin:0px;
+            }
+            
+              label {
+                flex: 3;
+                margin: 10px;
+                font-size: 20px;
+              }
+              
+              .main-text{
+                width:250px;
+                height:300px;
+                display: table-column;
+                background-color:rgb(204, 204, 204);
+                
+              }
+              .main-div{
+                display: flex;
+                gap:15px;
+              }
+             .heading-sign{
+              font-size: 20px;
+              text-align: end;
+             }
+             .container {
+              width: 80%;
+              margin: auto;
+              background-color: #fff;
+              padding: 20px;
+              box-shadow: 0 0 10px rgba(0,0,0,0.1);
+              margin-top: 20px;
+            }
+            .heading-main {
+              font-size: 24px;
+              margin-bottom: 10px;
+            }
+            .print-button {
+              margin: 20px 0;
+              text-align: right;
+            }
+            .print-button button {
+              padding: 10px 20px;
+              font-size: 16px;
+            }
+            .second-heading, .sub-heading, .main-heading {
+              margin: 20px 0;
+            }
+            .pro-head {
+              margin-top: 40px;
+              margin-bottom: 20px;
+            }
+            .border {
+              border-top: 2px solid #ddd;
+              margin: 20px 0;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+            }
+            .heading-sign {
+              margin-top: 40px;
+              font-size: 18px;
+            }
+            
+            
+            /* Print Button */
+            
+            
+            .print-button button {
+              padding: 10px 20px;
+              font-size: 16px;
+              background-color: #007bff;
+              color: #fff;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+            }
+            
+            .print-button button:hover {
+              background-color: #0056b3;
+            }
+            
+            /* Borders */
+            .border {
+              border-top: 2px solid #ddd;
+              margin: 20px 0;
+            }
+            
+            /* Tables */
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+            
+            th {
+              background-color: #f2f2f2;
+            }
+            
+            /* Signature Heading */
+            .heading-sign {
+              margin-top: 40px;
+              font-size: 18px;
+              color: #555;
+            }
+            
+            @media print {
+              .print-button {
+                display: none;
+              }
+            }
+            
+            
+            /* Responsive Styling */
+            @media screen and (max-width: 600px) {
+              .container {
+                padding: 10px;
+              }
+              .heading-main {
+                font-size: 20px;
+              }
+              .print-button button {
+                font-size: 14px;
+              }
+              th, td {
+                padding: 6px;
+              }
+            }
+            
+            .order-details >p{
+             
+              text-align: left;
+            }
+            
+            .tFoot{
+              text-align: right;
+            }
+                </style>
+              </head>
+              <body>
+                <div class="App">
+                  <div class="container">
+                    <div class="order-summaryy">
+                      <img src="https://media.licdn.com/dms/image/D4D22AQH34_zj130NOg/feedshare-shrink_2048_1536/0/1714210571437?e=2147483647&v=beta&t=PeG-sKmSnd0tnQktt96ws1fNewKZ6llFfqV41kK-nl8" alt=" Image">
+                      <div class="heading-main">Order Summary :- ${selectedOrder._id}</div>  
+                  </div>
+                  
+                       
+                      <div class="border"></div>
+                 
+                      
+                    <div class="first-head">
+                      <div class="order-summary">
+                        <div class="order-details">
+                          <p>Customer Name: ${selectedOrder.customerName}</p>
+                          <p>Order Start Date: ${formatDate(selectedOrder.orderStartDate)}</p>
+                          <p>Order Completed Date :-  ${formatDate(selectedOrder.orderCompleteDate)}</p>
+                        </div>
+                        
+                      </div>
+                      <div class="print-button">
+                        <button onclick="window.print()">Print</button>
+                      </div>
+                    </div>
+                   
+                    <h3 class="pro-head">Product Details:-</h3>
+                    <div class="sub-heading">
+                      <p>Product Name:- ${selectedOrder.productDetails.productName}</p>
+                      <p>Product Quantity:- ${selectedOrder.productQuantity}</p>
+                      <p>Product Description:- ${selectedOrder.productDetails.productDes}</p>
+                    </div>
+                    
+                    <div class="border"></div>
+                    <h4>Product Materials Used</h4>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Material ID</th>
+                          <th>Material Name</th>
+                          <th>Material Cost (per unit)</th>
+                          <th>Material Quantity</th>
+                          <th>Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      ${
+                        selectedOrder.productDetails.productMaterialList.forEach((ele)=>{
+                          return <tr>
+                          <td>1</td>
+                          <td>Product A</td>
+                          <td>001</td>
+                          <td>56</td>
+                          <td>5000</td>
+                        </tr>
+                        })
+                      }
+                      
+                        <tfoot>
+                          <tr>
+                            <td colspan="4" class="tFoot">(A) Products Material Cost:-</td>
+                            <td id="totalCost"></td>
+                          </tr>
+                        </tfoot>
+                        <!-- Add more products as needed -->
+                      </tbody>
+                    </table>
+            
+            
+                    
+                    <div class="border"></div>
+                    <h4>Extra Materials Used</h4>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Material ID</th>
+                          <th>Material Name</th>
+                          <th>Material Cost (per unit)</th>
+                          <th>Material Quantity</th>
+                          <th>Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>Product A</td>
+                          <td>001</td>
+                          <td>56</td>
+                          <td>5000</td>
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>Product A</td>
+                          <td>001</td>
+                          <td>56</td>
+                          <td>5000</td>
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>Product A</td>
+                          <td>001</td>
+                          <td>56</td>
+                          <td>5000</td>
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>Product A</td>
+                          <td>001</td>
+                          <td>56</td>
+                          <td>5000</td>
+                        </tr>
+                       
+                        
+                        <tfoot>
+                          <tr>
+                            <td colspan="4"  class="tFoot">(B) Total Extra Material Cost</td>
+                            <td id="totalCost"></td>
+                          </tr>
+                        </tfoot>
+                        <!-- Add more products as needed -->
+                      </tbody>
+                    </table>
+                    <div class="border"></div>
+                    
+                    <div class="main-heading">
+                      <h4>(C) Extra Cost:-</h4>
+                      <h4>(A+B+C) Total Order Cost:-</h4>
+                    </div>
+                   
+                    <div class="heading-sign">Signature</div>
+                  </div>
+                </div>
+              </body>
+            </html>
+            `}
+            style={{ position: "absolute", top: "-1000px", left: "-1000px" }}
+            title="Print Challan"
+          />
     </div>
   );
 };

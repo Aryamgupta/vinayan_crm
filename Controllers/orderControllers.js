@@ -42,7 +42,7 @@ const addOrder = asynchHandler(async (req, res) => {
 
   const fullOrder = await Order.findById(order._id)
     .populate("productDetails")
-    .populate("productDetails.productMaterialList.materialKey");
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(201).json(fullOrder);
@@ -66,20 +66,38 @@ const checkInventarStatus = asynchHandler(async (req, res) => {
 
   const order = await Order.findById(orderId);
 
+  if (order.materialAlloted) {
+    const fullOrde = await Order.findById(order._id)
+      .populate("productDetails")
+      .populate("extraMaterialNeeded.materialKey");
+
+    res.status(200).json(fullOrde);
+    return;
+  }
+
   const product = await Product.findById(order.productDetails);
 
   const inventaryStatus = await checkInvetary(
     product.productMaterialList,
     order
   );
+  let status;
+  if (inventaryStatus.length == 0) {
+    status = "Enough Inventary Present";
+  } else {
+    status = "No Enough Inventary Present";
+  }
 
   const fullOrder = await Order.findByIdAndUpdate(
     order._id,
     {
       inventarStatus: inventaryStatus,
+      status,
     },
     { new: true }
-  ).populate("productDetails");
+  )
+    .populate("productDetails")
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(200).json(fullOrder);
@@ -118,29 +136,63 @@ const allotMaterial = asynchHandler(async (req, res) => {
     throw new Error("No OrderId Present");
   }
 
-  const order = await Order.findById(orderId);
+  const order = await Order.findById(orderId)
+    .populate("productDetails")
+    .populate("extraMaterialNeeded.materialKey");
 
-  if (order.inventarStatus.length !== 0) {
-    res
-      .status(208)
-      .json({
-        message: "InSufficent Inventary Present , Please update Inventary",
-      });
+  if (order.materialAlloted) {
+    res.status(200).json(order);
     return;
   }
 
+  if (order.inventarStatus.length !== 0) {
+    res.status(208).json({
+      message: "InSufficent Inventary Present , Please update Inventary",
+    });
+    return;
+  }
+
+  const fullOrde = await Order.findByIdAndUpdate(
+    orderId,
+    {
+      status: "Material Alloted",
+      materialAlloted: true,
+    },
+    { new: true }
+  )
+    .populate("productDetails")
+    .populate("extraMaterialNeeded.materialKey");
+
   if (order.materialAlloted) {
-    res.status(210).json({ message: "Material Already Alloted" });
+    res.status(210).json(fullOrde);
     return;
   }
 
   const product = await Product.findById(order.productDetails);
 
-  await allotMateriall(product, order);
+  let msg = await allotMateriall(product, order);
 
-  const fullOrder = await Order.findByIdAndUpdate(orderId, {
-    materialAlloted: true,
-  }).populate("productDetails");
+  if (msg) {
+    res.status(400);
+    throw new Error("Insufficent Stock");
+  }
+
+  let status = "Material Alloted";
+
+  let overAllOrderCost =
+    order.extraMaterialCost + order.materialCost +order.otherCost;
+
+  const fullOrder = await Order.findByIdAndUpdate(
+    orderId,
+    {
+      materialAlloted: true,
+      status,
+      overAllOrderCost,
+    },
+    { new: true }
+  )
+    .populate("productDetails")
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(200).json(fullOrder);
@@ -159,7 +211,7 @@ const allotMateriall = async function (product, order) {
         pdtQuantity: mat.pdtQuantity - matQuanNeeded,
       });
     } else {
-      throw err("Insufficent Stock");
+      return "Insuffcient Stock";
     }
   });
 };
@@ -184,7 +236,9 @@ const addExtraMaterials = asynchHandler(async (req, res) => {
     throw new Error("No Extra Material Present");
   }
 
-  const order = await Order.findById(orderId);
+  const order = await Order.findById(orderId).populate(
+    "extraMaterialNeeded.materialKey"
+  );
 
   let extraMaterialNeededd = [];
 
@@ -196,18 +250,28 @@ const addExtraMaterials = asynchHandler(async (req, res) => {
     extraMaterialNeededd.push(oneMatObj);
   });
 
-  let extraMaterialCost = await allotExtraInventary(extraMaterialNeededd);
+  // let defEx = await deAllocateExtraMaterials(order.extraMaterialNeeded);
+
+  let extraMaterialCost = await allotExtraInventary(
+    order.extraMaterialNeeded,
+    extraMaterialNeededd
+  );
+
+  let overAllOrderCost =
+    extraMaterialCost + order.materialCost + order.otherCost;
 
   const fullOrder = await Order.findByIdAndUpdate(
     orderId,
     {
-      extraMaterialNeeded:extraMaterialNeededd,
+      extraMaterialNeeded: extraMaterialNeededd,
       extraMaterialCost,
+      overAllOrderCost,
     },
     { new: true }
   )
     .populate("productDetails")
     .populate("extraMaterialNeeded.materialKey");
+
   if (fullOrder) {
     res.status(200).json(fullOrder);
   } else {
@@ -216,22 +280,32 @@ const addExtraMaterials = asynchHandler(async (req, res) => {
   }
 });
 
-const allotExtraInventary = async (productMaterialList) => {
+const deAllocateExtraMaterials = async (prevMaterialList) => {
+  const promises = prevMaterialList.map(async (pMat) => {
+    await Material.findByIdAndUpdate(pMat.materialKey, {
+      $inc: { pdtQuantity: pMat.quantity },
+    });
+  });
+  await Promise.all(promises);
+};
+
+const allotExtraInventary = async (prevMaterialList, productMaterialList) => {
+  await deAllocateExtraMaterials(prevMaterialList);
+
   let extraMatCost = 0;
 
   const promises = productMaterialList.map(async (pMat) => {
     const mat = await Material.findById(pMat.materialKey);
     if (pMat.quantity <= mat.pdtQuantity) {
-      extraMatCost += mat.pdtCost * pMat.quantity; // Accumulate the cost
+      extraMatCost += mat.pdtCost * pMat.quantity;
       await Material.findByIdAndUpdate(pMat.materialKey, {
-        pdtQuantity: mat.pdtQuantity - pMat.quantity,
+        $inc: { pdtQuantity: 0 - pMat.quantity },
       });
     } else {
       throw new Error("Insufficient Stock");
     }
   });
 
-  // Wait for all promises to resolve
   await Promise.all(promises);
 
   return extraMatCost;
@@ -253,10 +327,13 @@ const markCompleteStatus = asynchHandler(async (req, res) => {
   const fullOrder = await Order.findByIdAndUpdate(
     orderId,
     {
-      status: "completed",
+      orderCompleteDate: new Date(),
+      status: "Completed",
     },
     { new: true }
-  ).populate("productDetails");
+  )
+    .populate("productDetails")
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(200).json(fullOrder);
@@ -283,11 +360,6 @@ const calculateOrderCost = asynchHandler(async (req, res) => {
 
   const order = await Order.findById(orderId);
 
-  if (order.status != "completed") {
-    res.status(400);
-    res.send({ message: "Order Not Completed Yet" });
-  }
-
   let overAllOrderCost =
     order.extraMaterialCost + order.materialCost + otherCost;
 
@@ -298,7 +370,16 @@ const calculateOrderCost = asynchHandler(async (req, res) => {
       overAllOrderCost,
     },
     { new: true }
-  ).populate("productDetails");
+  )
+    .populate("productDetails")
+    .populate({
+      path: "productDetails",
+      populate: {
+        path: "productMaterialList.materialKey",
+        model: "Material",
+      },
+    })
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(200).json(fullOrder);
@@ -355,10 +436,19 @@ const getOrders = asynchHandler(async (req, res) => {
   }
 });
 
-
 const getOrderDetailsById = asynchHandler(async (req, res) => {
   const orderId = req.params.id;
-  const fullOrder = await Order.findById(orderId).populate("productDetails").populate("extraMaterialNeeded.materialKey");;
+
+  const fullOrder = await Order.findById(orderId)
+    .populate("productDetails")
+    .populate({
+      path: "productDetails",
+      populate: {
+        path: "productMaterialList.materialKey",
+        model: "Material",
+      },
+    })
+    .populate("extraMaterialNeeded.materialKey");
 
   if (fullOrder) {
     res.status(200).json(fullOrder);
@@ -377,5 +467,5 @@ module.exports = {
   markCompleteStatus,
   deleteOrder,
   getOrders,
-  getOrderDetailsById
+  getOrderDetailsById,
 };

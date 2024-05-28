@@ -63,7 +63,7 @@ const DataTable = () => {
         pdtQuantity: Number(updatedRow.pdtQuantity),
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/product/materialOut",
+        "http://localhost:5000/api/material/materialOut",
         body,
         config
       );

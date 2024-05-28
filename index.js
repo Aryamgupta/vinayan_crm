@@ -2,11 +2,20 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require('cors');
 
+
+
+
+
+
 const mongoDbConnect = require("./config/db");
+
+
 dotenv.config();
 mongoDbConnect();
 // instance of express
 const app = express();
+
+
 
 const allowedOrigins = ['http://localhost:3000/'];
 

@@ -64,7 +64,7 @@ const AddOrderModal = ({ isOpen, onSave, onCancel }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center" style={{zIndex:"10"}}>
       <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#fa983d] ">
         <h2 className="text-md font-bold text-black pb-2">Add New Order</h2>
         <div className="flex flex-wrap -mx-2 mb-4">
