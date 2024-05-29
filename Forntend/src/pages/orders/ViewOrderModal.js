@@ -38,12 +38,65 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
   const printIframe = (id) => {
     const iframe = document.frames ? document.frames[id] : document.getElementById(id);
     const iframeWindow = iframe.contentWindow || iframe;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+  
+    let totalCostA = populateMaterials(iframe, 'materials-used-body', selectedOrder.productDetails.productMaterialList,selectedOrder.productQuantity);
+    let totalCostB = populateMaterials(iframe, 'extra-materials-used-body', selectedOrder.extraMaterialNeeded);
 
+    doc.getElementById('totalCostA').textContent = formatToRupees(totalCostA);
+    doc.getElementById('totalCostB').textContent = formatToRupees(totalCostB);
     iframe.focus();
     iframeWindow.print();
 
+    let tableBodyA = iframe.contentWindow.document.getElementById("materials-used-body");
+    let tableBodyB = iframe.contentWindow.document.getElementById("extra-materials-used-body");
+
+    // Clear the table body
+    tableBodyA.innerHTML = "";
+    tableBodyB.innerHTML = "";
     return false;
   };
+
+
+  function populateMaterials(iframe, tableId, materials,qty) {
+    let tableBody = iframe.contentWindow.document.getElementById(tableId);
+    let qtyy = qty ? qty :1;
+    let totalCost = 0;
+    console.log(tableBody);
+    tableBody.innerHtml = "";
+    materials.forEach(material => {
+      let row = document.createElement('tr');
+  
+      let idCell = document.createElement('td');
+      idCell.textContent = material.materialKey._id;
+      row.appendChild(idCell);
+  
+      let nameCell = document.createElement('td');
+      nameCell.textContent = material.materialKey.pdtName;
+      row.appendChild(nameCell);
+  
+      let costCell = document.createElement('td');
+      costCell.textContent = formatToRupees(material.materialKey.pdtCost);
+      row.appendChild(costCell);
+  
+      let quantityCell = document.createElement('td');
+      quantityCell.textContent = material.quantity * qtyy; 
+      row.appendChild(quantityCell);
+  
+      let totalCostCell = document.createElement('td');
+      let materialCost = material.materialKey.pdtCost * material.quantity * qtyy;
+      totalCostCell.textContent = formatToRupees(materialCost);
+      row.appendChild(totalCostCell);
+
+      totalCost += materialCost;
+      tableBody.appendChild(row);
+    });
+  
+    return totalCost;
+  }
+
+
+  
 
   useEffect(() => {
     fetchCompleteTable();
@@ -292,6 +345,11 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
 
     printIframe("print");
   };
+
+  
+  
+
+
 
   return (
     <div className="fixed top-0 left-0 w-full h-80 bg-gray-900 bg-opacity-50 flex items-center justify-center">
@@ -721,7 +779,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
               <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Order Summary</title>
+                <title>Order Summary :- ${selectedOrder._id}</title>
                 <style>
                   body {
                     font-family: Arial, sans-serif;
@@ -762,6 +820,12 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                 align-items: center;
                 justify-content: space-between;
               }
+
+              .main-heading span{
+                font-size: 14px;
+                font-weight: 300;
+              
+              }
             
               .order-summaryy img {
                 max-width: 100px;
@@ -777,8 +841,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
              
               .main-heading{
                 font-size: 14px;
-              text-align: start;
-              padding-left: 60%;
+              text-align: end;
               }
             .Date-Main{
               font-size: 15px;
@@ -838,7 +901,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
               font-size: 16px;
             }
             .second-heading, .sub-heading, .main-heading {
-              margin: 20px 0;
+              margin: 0px 0;
             }
             .pro-head {
               margin-top: 40px;
@@ -993,27 +1056,14 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                           <th>Cost</th>
                         </tr>
                       </thead>
-                      <tbody>
-                      ${
-                        selectedOrder.productDetails.productMaterialList.forEach((ele)=>{
-                          return <tr>
-                          <td>1</td>
-                          <td>Product A</td>
-                          <td>001</td>
-                          <td>56</td>
-                          <td>5000</td>
-                        </tr>
-                        })
-                      }
-                      
-                        <tfoot>
+                      <tbody id="materials-used-body">
+                      </tbody>
+                      <tfoot>
                           <tr>
-                            <td colspan="4" class="tFoot">(A) Products Material Cost:-</td>
-                            <td id="totalCost"></td>
+                            <td colspan="4" class="tFoot" >(A) Products Material Cost:-</td>
+                            <td id="totalCostA"></td>
                           </tr>
                         </tfoot>
-                        <!-- Add more products as needed -->
-                      </tbody>
                     </table>
             
             
@@ -1030,51 +1080,20 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                           <th>Cost</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Product A</td>
-                          <td>001</td>
-                          <td>56</td>
-                          <td>5000</td>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Product A</td>
-                          <td>001</td>
-                          <td>56</td>
-                          <td>5000</td>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Product A</td>
-                          <td>001</td>
-                          <td>56</td>
-                          <td>5000</td>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Product A</td>
-                          <td>001</td>
-                          <td>56</td>
-                          <td>5000</td>
-                        </tr>
-                       
-                        
+                      <tbody id="extra-materials-used-body">
+                      </tbody>
                         <tfoot>
                           <tr>
                             <td colspan="4"  class="tFoot">(B) Total Extra Material Cost</td>
-                            <td id="totalCost"></td>
+                            <td id="totalCostB"></td>
                           </tr>
                         </tfoot>
-                        <!-- Add more products as needed -->
-                      </tbody>
                     </table>
                     <div class="border"></div>
                     
                     <div class="main-heading">
-                      <h4>(C) Extra Cost:-</h4>
-                      <h4>(A+B+C) Total Order Cost:-</h4>
+                      <h4>(C) Extra Cost:- <span>${formatToRupees(selectedOrder.otherCost)}</span></h4>
+                      <h4>(A+B+C) Total Order Cost:- <span>${formatToRupees(selectedOrder.overAllOrderCost)}</span> </h4>
                     </div>
                    
                     <div class="heading-sign">Signature</div>
@@ -1083,8 +1102,8 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
               </body>
             </html>
             `}
-            style={{ position: "absolute", top: "-1000px", left: "-1000px" }}
-            title="Print Challan"
+            style={{ width:"100%",position: "absolute", top: "-1000px", left: "-1000px" }}
+            title={`Order Summary ${selectedOrder._id}`}
           />
     </div>
   );

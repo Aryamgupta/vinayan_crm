@@ -51,18 +51,6 @@ const ViewProductModal = ({
     updateMaterialQuantity(materials, selectedProduct.productMaterialList);
   }, []);
 
-  // const handleMaterialChange = (materialId, key, value) => {
-  //   setMaterials((prevMaterials) =>
-  //     prevMaterials.map((material) =>
-  //       material.materialKey._id === materialId
-  //         ? {
-  //             ...material,
-  //             [key]: value,
-  //           }
-  //         : material
-  //     )
-  //   );
-  // };
 
   const handleCheckboxChange = (id) => {
     setSelectedMaterials((prevState) => ({
