@@ -46,7 +46,6 @@ const ProductForm = () => {
       .catch((error) => {
         console.error("Error saving data:", error);
       });
-
   };
 
   const handleDeleteProduct = (id) => {
@@ -62,7 +61,9 @@ const ProductForm = () => {
         config
       )
       .then((response) => {
-        let newProductsData = products.filter((p)=>{return p._id !== id});
+        let newProductsData = products.filter((p) => {
+          return p._id !== id;
+        });
         setProducts(newProductsData);
         setSelectedProduct(null);
         setViewIsModalOpen(false);
@@ -71,7 +72,6 @@ const ProductForm = () => {
         console.error("Error saving data:", error);
       });
   };
-
 
   const handleAddData = (product) => {
     // Update tableData with the new data
@@ -144,7 +144,7 @@ const ProductForm = () => {
           selectedProduct={selectedProduct}
           onRequestClose={() => setViewIsModalOpen(false)}
           setSelectedProduct={setSelectedProduct}
-          handleDeleteProduct = {handleDeleteProduct}
+          handleDeleteProduct={handleDeleteProduct}
         />
       )}
     </div>

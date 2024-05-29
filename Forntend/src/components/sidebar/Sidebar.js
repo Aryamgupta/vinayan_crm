@@ -16,7 +16,7 @@ function Sidebar() {
   const menuItems = [
     { path: "/records", icon: <FaCartPlus size={22}/>, label: "Material in" },
     { path: "/test", icon: <BsCartDashFill  size={22}/>, label: "Material Out" },
-    { path: "/Stock", icon: <TbListDetails size={22}/>, label: "Remaining stock" },
+    // { path: "/Stock", icon: <TbListDetails size={22}/>, label: "Remaining stock" },
     { path: "/storemanagement", icon: <GrDatabase size={22}/>, label: "Store Management" },
     { path: "/orders", icon: <GrDatabase size={22}/>, label: "Order Management" },
    
