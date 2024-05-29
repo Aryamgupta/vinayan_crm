@@ -95,6 +95,14 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
     setProductDes("");
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // setSelectedFile(file);
+      console.log("yes i am herew");
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -129,8 +137,21 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
             ></textarea>
           </div>
         </div>
+        <div className="flex flex-wrap -mx-2 mb-4">
+          <div className=" nameIpField w-full  px-2 mb-2">
+            <label htmlFor="pdtName" className="block mb-1">
+              Product Description:
+            </label>
+            <input 
+          type="file"
+          onChange={handleImageUpload}
+          accept="image/*" // Ensures only image files can be selected
+        />
+          </div>
+        </div>
 
         <div className="materialATble" style={{ width: "100%", overflowX: "auto" }}>
+          
               <h2 className="edit-head" style={{ position: "sticky", top: 0, background: "#fff", zIndex: 1 }}>
                 Select Materials And Quantity
               </h2>
