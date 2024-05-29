@@ -95,6 +95,14 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
     setProductDes("");
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // setSelectedFile(file);
+      console.log("yes i am herew");
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -129,48 +137,58 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
             ></textarea>
           </div>
         </div>
-
-        <div className="materialATble  mb-4">
-          <h2>Select Materials And Quantity</h2>
-         <div>
-         <form>
-            <table>
-              <thead>
-                <tr>
-                  <th>Select</th>
-                  <th>Material</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map((material) => (
-                  <tr key={material._id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedMaterials[material._id] || false}
-                        onChange={() => handleCheckboxChange(material._id)}
-                      />
-                    </td>
-                    <td>{material.materialName}</td>
-                    <td>
-                      <input
-                        type="number"
-                        value={material.materialQuantity}
-                        onChange={(e) =>
-                          handleQuantityChange(material._id, e.target.value)
-                        }
-                        disabled={!selectedMaterials[material._id] || false}
-                        min={0}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </form>
-         </div>
+        <div className="flex flex-wrap -mx-2 mb-4">
+          <div className=" nameIpField w-full  px-2 mb-2">
+            <label htmlFor="pdtName" className="block mb-1">
+              Product Description:
+            </label>
+            <input 
+          type="file"
+          onChange={handleImageUpload}
+          accept="image/*" // Ensures only image files can be selected
+        />
+          </div>
         </div>
+
+        <div className="materialATble" style={{ width: "100%", overflowX: "auto" }}>
+          
+              <h2 className="edit-head" style={{ position: "sticky", top: 0, background: "#fff", zIndex: 1 }}>
+                Select Materials And Quantity
+              </h2>
+              <div style={{height: "300px", overflowY: "scroll", width: "100%", border:"1px solid #ccc"}} >
+                  <table style={{ width: "100%", borderCollapse: "collapse",}}>
+                    <thead style={{ position: "sticky", top: "0px", backgroundColor: "#f9f9f9", zIndex: 1 }}>
+                      <tr>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Select</th>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Material</th>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Quantity</th>
+                      </tr>
+                    </thead>
+
+                      {materials.map((material) => (
+                        <tr key={material._id} style={{}}>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>
+                            <input
+                              type="checkbox"
+                              checked={selectedMaterials[material._id] || false}
+                              onChange={() => handleCheckboxChange(material._id)}
+                            />
+                          </td>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{material.materialName}</td>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>
+                            <input
+                              type="number"
+                              value={material.materialQuantity}
+                              onChange={(e) => handleQuantityChange(material._id, e.target.value)}
+                              disabled={!selectedMaterials[material._id] || false}
+                              min={0}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                  </table>
+              </div>
+            </div>
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}

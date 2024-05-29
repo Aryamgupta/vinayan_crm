@@ -10,17 +10,20 @@ const ViewProductModal = ({
   setSelectedProduct,
   handleDeleteProduct,
 }) => {
+  const { formatToRupees } = AppState();
+
   const { products, setProducts, materials, setMaterials } = AppState();
   const [isEditing, setIsEditing] = useState(false);
   const [productData, setProductData] = useState(selectedProduct);
-
   const [loading, setLoading] = useState(false);
   const [selectedMaterials, setSelectedMaterials] = useState({});
   const [unselectedMaterials, setUnselectedMaterials] = useState([]);
-  const [listedMaterials, setListedMaterials] = useState(productData.productMaterialList);
+  const [listedMaterials, setListedMaterials] = useState(
+    productData.productMaterialList
+  );
 
-  const handleEditToggle = async() => {
-    if(isEditing){
+  const handleEditToggle = async () => {
+    if (isEditing) {
       await handleSave();
     }
     setIsEditing(!isEditing);
@@ -50,7 +53,6 @@ const ViewProductModal = ({
 
     updateMaterialQuantity(materials, selectedProduct.productMaterialList);
   }, []);
-
 
   const handleCheckboxChange = (id) => {
     setSelectedMaterials((prevState) => ({
@@ -94,24 +96,24 @@ const ViewProductModal = ({
     setLoading(false);
   };
 
-
-
   const handleSave = async () => {
     setLoading(true);
-    const selected = materials.filter((material) => selectedMaterials[material._id] && material.materialQuantity > 0);
-    
-   
-    if (selected.length == 0 ) {
-        alert("No Material Selected");
-        return;
-      }
+    const selected = materials.filter(
+      (material) =>
+        selectedMaterials[material._id] && material.materialQuantity > 0
+    );
 
-      const selectedMaterialsArray = selected.map((element) => {
-        return { [element._id]: element.materialQuantity };
-      });
+    if (selected.length == 0) {
+      alert("No Material Selected");
+      return;
+    }
+
+    const selectedMaterialsArray = selected.map((element) => {
+      return { [element._id]: element.materialQuantity };
+    });
 
     const newData = {
-      productName:productData.productName,
+      productName: productData.productName,
       materialList: selectedMaterialsArray,
     };
 
@@ -124,7 +126,11 @@ const ViewProductModal = ({
 
     // // API call to save data
     axios
-      .put("http://localhost:5000/api/finalProduct/editProduct", newData, config)
+      .put(
+        "http://localhost:5000/api/finalProduct/editProduct",
+        newData,
+        config
+      )
       .then((response) => {
         setListedMaterials(response.data.productMaterialList);
         setProductData(response.data);
@@ -133,7 +139,7 @@ const ViewProductModal = ({
         console.error("Error saving data:", error);
       });
 
-      setLoading(false);
+    setLoading(false);
   };
 
   return (
@@ -145,114 +151,115 @@ const ViewProductModal = ({
       overlayClassName="product-modal-overlay"
     >
       <div className="modal-header">
-        <h2>Product Details</h2>
+        <h2 className="main-heading">{productData.productName}</h2>
         <button onClick={onRequestClose} className="close-button">
-          Close
+       X
         </button>
       </div>
       <div className="modal-body">
-        <div className="product-info">
-          <label>Product Name:</label>
-          <p>{productData.productName}</p>
-        </div>
-        <div className="product-info">
-          <label>Product Description:</label>
-          <p>{productData.productDes}</p>
-        </div>
-        <div className="product-info">
-          <label>Product Material Cost (approx):</label>
-          <p> Rs. {productData.approximateMaterialCost}</p>
-        </div>
-        {!isEditing ? (
-          <table className="materials-table">
-            <thead>
-              <tr>
-                <th>Material ID</th>
-                <th>Material Name</th>
-                <th>Material Cost</th>
-                <th>Material Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!loading && listedMaterials.map((material) => (
-                <tr key={material.materialKey._id}>
-                  <td> {material.materialKey._id}</td>
-                  <td> {material.materialKey.pdtName}</td>
-                  <td> {material.materialKey.pdtCost}</td>
-                  <td>
-                    {material.quantity}
-                    {/* <input
-                    type="number"
-                    min={1}
-                    value={material.quantity}
-                    disabled={!isEditing}
-                    onChange={(e) =>
-                      handleMaterialChange(
-                        material.materialKey._id,
-                        "quantity",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  /> */}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="materialATble  mb-4">
-            <h2>Select Materials And Quantity</h2>
-            <div>
-              <form>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Select</th>
-                      <th>Material</th>
-                      <th>Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {materials.map((material) => (
-                      <tr key={materials._id}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedMaterials[material._id] || false}
-                            onChange={() => handleCheckboxChange(material._id)}
-                          />
-                        </td>
-                        <td>{material.materialName}</td>
-                        <td>
-                          <input
-                            type="number"
-                            value={material.materialQuantity}
-                            onChange={(e) =>
-                              handleQuantityChange(material._id, e.target.value)
-                            }
-                            disabled={!selectedMaterials[material._id] || false}
-                            min={0}
-                          />
+        <div className="content-wrapper">
+          <div className="image-section">
+            <img src={productData.productImage} alt="Product" />
+          </div>
+          <div className="data-section">
+            
+            <div className="product-info">
+             
+              <p className="sub-heading">{productData.productDes}</p>
+            </div>
+           
+            {!isEditing ? (
+              <table className="materials-table">
+                <thead>
+                  <tr>
+                    <th>Material ID</th>
+                    <th>Material Name</th>
+                    <th>Material Cost</th>
+                    <th>Material Quantity</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!loading &&
+                    listedMaterials.map((material) => (
+                      <tr key={material.materialKey._id}>
+                        <td> {material.materialKey._id}</td>
+                        <td> {material.materialKey.pdtName}</td>
+                        <td style={{textAlign:"center"}}> {formatToRupees(material.materialKey.pdtCost)}</td>
+
+                        <td>{material.quantity}</td>
+                        <td style={{textAlign:"right"}}>
+                          {" "}
+                          {formatToRupees(
+                            material.materialKey.pdtCost * material.quantity
+                          )}
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </form>
+                    ))}                    
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="4" class="tFoott">
+                      Total Extra Material Cost
+                    </td>
+                    <td id="totalCostB">{formatToRupees(productData.approximateMaterialCost)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            ) : (
+              <div className="materialATble" style={{ width: "100%", overflowX: "auto" }}>
+              <h2 className="edit-head" style={{ position: "sticky", top: 0, background: "#fff", zIndex: 1 }}>
+                Select Materials And Quantity
+              </h2>
+              <div style={{height: "300px", overflowY: "scroll", width: "100%", border:"1px solid #ccc"}} >
+                  <table style={{ width: "100%", borderCollapse: "collapse",}}>
+                    <thead style={{ position: "sticky", top: "0px", backgroundColor: "#f9f9f9", zIndex: 1 }}>
+                      <tr>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Select</th>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Material</th>
+                        <th style={{ padding: "10px", textAlign: "center",border: "1px solid #ddd", borderBottom: "2px solid #ccc" }}>Quantity</th>
+                      </tr>
+                    </thead>
+
+                      {materials.map((material) => (
+                        <tr key={material._id} style={{}}>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>
+                            <input
+                              type="checkbox"
+                              checked={selectedMaterials[material._id] || false}
+                              onChange={() => handleCheckboxChange(material._id)}
+                            />
+                          </td>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>{material.materialName}</td>
+                          <td style={{ padding: "10px", border: "1px solid #ddd",textAlign:"center" }}>
+                            <input
+                              type="number"
+                              value={material.materialQuantity}
+                              onChange={(e) => handleQuantityChange(material._id, e.target.value)}
+                              disabled={!selectedMaterials[material._id] || false}
+                              min={0}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                  </table>
+              </div>
             </div>
+            
+            )}
           </div>
-        )}
-      </div>
-      <div className="modal-footer">
-        <button onClick={handleEditToggle}>
-          {isEditing ? "Save" : "Edit"}
-        </button>
-        <button onClick={handleRecalculateCost}>
-          {loading ? "laoding" : "Recalculate Cost"}
-        </button>
-        <button onClick={() => handleDeleteProduct(productData._id)}>
-          Delete Product
-        </button>
+        </div>
+        <div className="modal-footer">
+          <button onClick={handleEditToggle}>
+            {isEditing ? "Save" : "Edit"}
+          </button>
+          <button onClick={handleRecalculateCost}>
+            {loading ? "laoding" : "Recalculate Cost"}
+          </button>
+          <button onClick={() => handleDeleteProduct(productData._id)}>
+          Remove Product
+          </button>
+        </div>
       </div>
     </Modal>
   );

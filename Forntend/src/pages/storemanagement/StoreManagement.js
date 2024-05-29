@@ -14,7 +14,7 @@ const ProductForm = () => {
     router("/");
   }
 
-  const { products, setProducts, fetchAllProducts } = AppState();
+  const { products, setProducts, fetchAllProducts,formatToRupees } = AppState();
 
   useEffect(() => {
     fetchAllProducts();
@@ -46,7 +46,6 @@ const ProductForm = () => {
       .catch((error) => {
         console.error("Error saving data:", error);
       });
-
   };
 
   const handleDeleteProduct = (id) => {
@@ -62,7 +61,9 @@ const ProductForm = () => {
         config
       )
       .then((response) => {
-        let newProductsData = products.filter((p)=>{return p._id !== id});
+        let newProductsData = products.filter((p) => {
+          return p._id !== id;
+        });
         setProducts(newProductsData);
         setSelectedProduct(null);
         setViewIsModalOpen(false);
@@ -71,7 +72,6 @@ const ProductForm = () => {
         console.error("Error saving data:", error);
       });
   };
-
 
   const handleAddData = (product) => {
     // Update tableData with the new data
@@ -105,11 +105,12 @@ const ProductForm = () => {
         {products.map((product) => (
           <div
             key={product._id}
-            className="border-t-2 border-[#fa983d] rounded-lg shadow-lg bg-white cursor-pointer"
+            className="border-t-2 border-[#fa983d] rounded-lg shadow-lg bg-white cursor-pointer py-6"
             onClick={() => fetchSingleProduct(product._id)}
           >
             <div className="p-4">
-              <div className="text-md gap-4 font-semibold">
+              <img src={product.productName} style={{width:"100%",height:"200px",margin:"0 0 20px 0"}}/>
+              <div className="text-md gap-4 font-semibold space-x-4">
                 <span style={{ fontWeight: "bold", color: "orange" }}>
                   Product Name:
                 </span>
@@ -117,7 +118,7 @@ const ProductForm = () => {
                   {product.productName}
                 </span>
               </div>
-              <div className="text-md gap-4 font-semibold">
+              <div className="text-md gap-4 font-semibold space-x-4">
                 <span style={{ fontWeight: "bold", color: "orange" }}>
                   Product Description:
                 </span>
@@ -125,12 +126,12 @@ const ProductForm = () => {
                   {product.productDes}
                 </span>
               </div>
-              <div className="text-md gap-4 font-semibold">
+              <div className="text-md  font-semibold space-x-4">
                 <span style={{ fontWeight: "bold", color: "orange" }}>
                   Product Material Cost (Approx):
                 </span>
                 <span style={{ color: "gray", fontSize: "small" }}>
-                  Rs. {product.approximateMaterialCost}
+                 {formatToRupees(product.approximateMaterialCost)}
                 </span>
               </div>
             </div>
@@ -144,7 +145,7 @@ const ProductForm = () => {
           selectedProduct={selectedProduct}
           onRequestClose={() => setViewIsModalOpen(false)}
           setSelectedProduct={setSelectedProduct}
-          handleDeleteProduct = {handleDeleteProduct}
+          handleDeleteProduct={handleDeleteProduct}
         />
       )}
     </div>
