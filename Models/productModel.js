@@ -13,6 +13,7 @@ const productSchema = mongoose.Schema({
   productDes: { type: "String", required: true },
   productMaterialList:[matrialList],
   approximateMaterialCost: { type: "Number" },
+  productImage: { type: "String"}
 });
 
 const Product = mongoose.model("Product", productSchema);

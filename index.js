@@ -2,7 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require('cors');
 
-
+const bodyParser = require('body-parser');
+const uploadRoute = require('./config/upload');
 
 
 
@@ -15,7 +16,12 @@ mongoDbConnect();
 // instance of express
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
+// Routes
+app.use('/api', uploadRoute);
 
 const allowedOrigins = ['http://localhost:3000/'];
 

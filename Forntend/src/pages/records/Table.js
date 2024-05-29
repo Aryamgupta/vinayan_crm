@@ -284,25 +284,25 @@ const DataTable = () => {
                 onClick={() => handleSort("ProductId")}
                 className="px-4 py-2 cursor-pointer"
               >
-                Product Id
+                Material Id
               </th>
               <th
                 onClick={() => handleSort("pdtName")}
                 className="px-4 py-2 cursor-pointer"
               >
-                Product Name
+                Material Name
               </th>
               <th
                 onClick={() => handleSort("pdtQuantity")}
                 className="px-4 py-2 cursor-pointer"
               >
-                Product Quantity
+                Material Quantity Present
               </th>
               <th
                 onClick={() => handleSort("pdtCost")}
                 className="px-4 py-2 cursor-pointer"
               >
-                Product Cost
+                Material Per Cost (per unit)
               </th>
               <th
                 onClick={() => handleSort("vendorName")}
