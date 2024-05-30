@@ -74,7 +74,7 @@ function Sidebar() {
   </div>
   <div className="flex items-center justify-center">
     <button
-      className="inline-flex shadow-md items-center justify-center gap-2.5 py-2 px-5 rounded-md bg-[#fa983d] font-bold text-white hover:bg-opacity-90"
+      className="inline-flex shadow-md items-center justify-center gap-2.5 py-2 px-5 rounded-md bg-[#fa983d] font-bold text-white hover:bg-[#fa983d] "
       onClick={handleLogout}
     >
       <span>Logout</span>

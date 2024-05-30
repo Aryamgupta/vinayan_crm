@@ -786,11 +786,13 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
                     margin: 0;
                     padding: 0;
                     background-color: #f8f8f8;
+                    width:100%;
+                    height:100%:
                   }
                   
             .App {
                 text-align: center;
-              width: 900px;
+              width:900px;
               padding:30px;
                 margin:auto;
               }
@@ -1102,7 +1104,7 @@ const ViewOrderModal = ({ selectedOrder, setSelectedOrder }) => {
               </body>
             </html>
             `}
-            style={{ width:"100%",position: "absolute", top: "-1000px", left: "-1000px" }}
+            style={{ width:"100%",position: "absolute", top: "-1000px", left: "100%" }}
             title={`Order Summary ${selectedOrder._id}`}
           />
     </div>

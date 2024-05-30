@@ -6,7 +6,7 @@ import "./orders.css";
 import axios from "axios";
 
 const Orders = () => {
-  const { orders, setOrders, fetchOrders } = AppState();
+  const { orders, setOrders, fetchOrders,formatDate } = AppState();
   const [isAddModelOpen, setIsAddModelOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -75,36 +75,56 @@ const Orders = () => {
             className="border-t-2 border-[#fa983d] rounded-lg shadow-lg bg-white cursor-pointer"
             onClick={() => fetchOrderData(order._id)}
           >
-            <div className="p-4 border border-gray-200 rounded-md relative">
-              
+            <div className="p-4  rounded-md relative">
               <div className="absolute top-0 right-0 bg-yellow-500 text-white px-2 py-1 rounded-tr-md rounded-bl-md text-xs font-semibold">
                 {order.status}
               </div>
 
-              
-              <div className="text-md gap-4 font-semibold">
-                <div>
-                  <span className="font-bold text-orange-500">
-                    Customer Name:{" "}
+              <img
+                src={`http://localhost:5000${order.productDetails.productImage}`}
+                style={{ display: "block", margin: "0 auto" }}
+              />
+
+              <div className="text-md text-left " style={{padding:"10px 0px 0px"}}>
+                <div className=" ">
+                  <span className="font-bold text-orange-500 mr-2 " >
+                    Order Id:
                   </span>
-                  <span className="text-gray-500 text-sm">
-                    {" "}{order.customerName}
+                  <span className="text-sm" style={{color:"gray",fontWeight:"400"}}>
+                    {order._id}
                   </span>
                 </div>
+                <div className="">
+                  <span className="font-bold text-orange-500 text-center mr-2">
+                    Customer Name:
+                  </span>
+                  <span className="text-sm" style={{color:"gray",fontWeight:"400"}}>
+                    {order.customerName}
+                  </span>
+                </div>
+
                 <div>
-                  <span className="font-bold text-orange-500">
+                  <span className="font-bold text-orange-500 mr-2">
                     Product Name:
                   </span>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-sm" style={{color:"gray",fontWeight:"400"}}>
                     {order.productDetails.productName}
                   </span>
                 </div>
                 <div>
-                  <span className="font-bold text-orange-500">
+                  <span className="font-bold text-orange-500 mr-2 ">
                     Order Quantity:
                   </span>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-sm" style={{color:"gray",fontWeight:"400"}}>
                     {order.productQuantity}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-orange-500 mr-2 ">
+                    Order Start Date:
+                  </span>
+                  <span className="text-sm" style={{color:"gray",fontWeight:"400"}}>
+                    {formatDate(order.orderStartDate)}
                   </span>
                 </div>
               </div>

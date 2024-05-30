@@ -329,7 +329,7 @@ const DataTable = () => {
           <tbody>
             {visibleTableData.map((rowData, index) => (
               <tr key={rowData._id}>
-                <td className="border px-4 py-2">{rowData._id}</td>
+                <td className="border px-4">{rowData._id}</td>
                 <td className="border px-4 py-2">{rowData?.pdtName}</td>
                 <td className="border px-4 py-2">{rowData?.pdtQuantity}</td>
                 <td className="border px-4 py-2">{rowData?.pdtCost}</td>

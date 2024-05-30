@@ -68,7 +68,7 @@ const AddOrderModal = ({ isOpen, onSave, onCancel }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#fa983d] ">
         <h2 className="text-md font-bold text-black pb-2">Add New Order</h2>
         <div className="flex flex-wrap -mx-2 mb-4">
-          <div className="w-full md:w-1/2 px-2 mb-2">
+          <div className="w-full md:w-1/2 px-2 mb-2 text-center">
             <label htmlFor="pdtName" className="block mb-1">
               Customer Name:
             </label>
