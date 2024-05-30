@@ -199,12 +199,12 @@ const DataTable = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between mb-4 mt-4 ">
-        <span className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3  inline-block">
+      <div className="flex justify-end mb-4 mt-4">
+        {/* <span className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3  inline-block">
           Material Out
-        </span>
+        </span> */}
 
-        <div className="flex justify-end gap-4">
+        <div className="space-x-4">
           <input
             type="text"
             placeholder="Search here"

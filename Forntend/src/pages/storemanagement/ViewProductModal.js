@@ -159,7 +159,7 @@ const ViewProductModal = ({
       <div className="modal-body">
         <div className="content-wrapper">
           <div className="image-section">
-            <img src={productData.productImage} alt="Product" />
+            <img src={`http://localhost:5000${productData.productImage}`}  alt="Product" />
           </div>
           <div className="data-section">
             
@@ -211,7 +211,7 @@ const ViewProductModal = ({
               <h2 className="edit-head" style={{ position: "sticky", top: 0, background: "#fff", zIndex: 1 }}>
                 Select Materials And Quantity
               </h2>
-              <div style={{height: "300px", overflowY: "scroll", width: "100%", border:"1px solid #ccc"}} >
+              <div style={{maxHeight: "300px", overflowY: "scroll", width: "100%", border:"1px solid #ccc"}} >
                   <table style={{ width: "100%", borderCollapse: "collapse",}}>
                     <thead style={{ position: "sticky", top: "0px", backgroundColor: "#f9f9f9", zIndex: 1 }}>
                       <tr>

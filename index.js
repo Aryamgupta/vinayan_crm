@@ -16,12 +16,6 @@ mongoDbConnect();
 // instance of express
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
-
-// Routes
-app.use('/api', uploadRoute);
 
 const allowedOrigins = ['http://localhost:3000/'];
 
@@ -39,6 +33,14 @@ app.use(cors());
 
 // Define your routes
 app.options('*', cors());
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
+// Routes
+app.use('/api', uploadRoute);
 
 const userRoutes = require("./Routes/userRoutes");
 const materialRoutes = require("./Routes/productRoutes");
