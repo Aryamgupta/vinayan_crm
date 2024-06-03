@@ -24,4 +24,15 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
+const authAdmin = asyncHandler(async (req, res, next) => {
+  if (req.user.roleType == "admin") {
+    try {
+      next();
+    } catch (error) {
+      res.status(402);
+      throw new Error("Not authorized, as admin");
+    }
+  }
+});
+
 module.exports = { protect };

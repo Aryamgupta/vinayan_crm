@@ -9,7 +9,6 @@ router.route("/edit").put(protect,editProduct);
 router.route("/:id").get(protect,deleteProduct);
 router.route("/").get(protect,recalculateCost);
 router.route("/allotMaterial/:id").put(protect,getAllProducts);
-router.route("/edit/:id").put(protect,getAllProducts);
-router.route("/:id").get(protect,getSingleProduct);
+router.route("/markReturnStatus/:id").put(protect,getAllProducts);
 
 module.exports = router;
