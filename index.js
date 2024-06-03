@@ -46,6 +46,8 @@ const userRoutes = require("./Routes/userRoutes");
 const materialRoutes = require("./Routes/productRoutes");
 const productRoutes = require("./Routes/finalProductRoutes");
 const orderRoutes = require("./Routes/orderRoutes")
+const emplyoeeRoutes = require("./Routes/employeeRoutes")
+const internalAllotmentRoutes = require("./Routes/internalAllotMentRoutes")
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 
 // to express the json data
@@ -62,6 +64,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/finalProduct", productRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/emplyoee",emplyoeeRoutes );
+app.use("/api/internalAllotement",internalAllotmentRoutes );
+
 
 const PORT = process.env.PORT || 5000; // deciding port
 

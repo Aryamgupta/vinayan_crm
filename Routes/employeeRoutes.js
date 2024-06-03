@@ -1,14 +1,14 @@
 const express = require("express");
 const { protect } = require("../middleware/authMiddleware");
-const { addProduct, editProduct, deleteProduct, recalculateCost, getAllProducts, getSingleProduct } = require("../Controllers/finalProductControllers");
+const { addEmplyee, getEmplyee, getAllEmplyee, allocateMaterial, deAllocateMaterial } = require("../Controllers/employeeControllers");
 
 const router = express.Router();
 
-router.route("/add").post(protect,addProduct);
-router.route("/edit").put(protect,editProduct);
-router.route("/:id").get(protect,deleteProduct);
-router.route("/").get(protect,recalculateCost);
-router.route("/allotMaterial/:id").put(protect,getAllProducts);
-router.route("/markReturnStatus/:id").put(protect,getAllProducts);
+router.route("/add").post(protect,addEmplyee);
+// router.route("/:empId").put(protect,editProduct);
+router.route("/:empId").get(protect,getEmplyee);
+router.route("/").get(protect,getAllEmplyee);
+router.route("/allotMaterial/:empId").put(protect,allocateMaterial);
+router.route("/deAllocateMaterial/:empId").put(protect,deAllocateMaterial);
 
 module.exports = router;

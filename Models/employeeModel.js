@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 const InternalAllotment = require("./internalAllotmentModel");
 
 
 const employeeSchema = mongoose.Schema({
   empId: { type: "String", required: "true", unique: "true" },
   name: { type: "String", required: true },
-  phoneNumber: { type: "String", required: true },
-  email: { type: "String", required: true },
+  phoneNumber: { type: "String", required: true,unique: "true"  },
+  email: { type: "String", required: true ,unique: "true" },
   pic: { type: "String", required: true },
   jobRole: { type: "String", required: true },
   dept: {
