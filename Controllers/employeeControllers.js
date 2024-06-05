@@ -103,6 +103,8 @@ const allocateMaterial = asynchHandler(async (req, res) => {
     throw new Error("No Employee Id is provided");
   }
 
+
+
   let employee = await Employee.findOne({ empId });
 
   let { materialId, materialQuantity, allotmentDate } = req.body;

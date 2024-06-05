@@ -2,8 +2,7 @@ const mongoose = require("mongoose")
 
 const materialSchema = mongoose.Schema(
   {
-
-    pdtName:{ type: "String",unique:true, required: true },
+    pdtName:{ type: "String",required: true },
     pdtQuantity:{ type: "Number", required: true},
     pdtCost: { type: "Number", required: true },
     vendorName: { type: "String", required: true },
