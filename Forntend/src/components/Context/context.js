@@ -33,13 +33,13 @@ const AppProvider = ({ children }) => {
         },
       };
 
-      console.log(config);
+      // console.log(config);
       const { data } = await axios.get(
         `http://localhost:5000/api/finalProduct/getAllProducts`,
         config
       );
       setProducts(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -54,13 +54,13 @@ const AppProvider = ({ children }) => {
         },
       };
 
-      console.log(config);
+      // console.log(config);
       const { data } = await axios.get(
         `http://localhost:5000/api/order`,
         config
       );
       setOrders(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -74,7 +74,7 @@ const AppProvider = ({ children }) => {
       },
     };
 
-    console.log(config);
+    // console.log(config);
     const { data } = await axios.get(
       "http://localhost:5000/api/material",
       config
@@ -90,7 +90,7 @@ const AppProvider = ({ children }) => {
       mData.push(newObj);
     });
     setMaterials(mData);
-    console.log(materials);
+    // console.log(materials);
   };
 
   function formatDate(timestamp) {

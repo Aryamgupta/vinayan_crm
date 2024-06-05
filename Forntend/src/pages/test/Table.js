@@ -198,9 +198,19 @@ const DataTable = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="container mx-auto">
       <div className="flex justify-end ">
         <div className="space-x-2">
+=======
+    <div className="container mx-auto p-4">
+      <div className="flex justify-end mb-4 mt-4">
+        {/* <span className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3  inline-block">
+          Material Out
+        </span> */}
+
+        <div className="space-x-4">
+>>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
           <input
             type="text"
             placeholder="Search here"

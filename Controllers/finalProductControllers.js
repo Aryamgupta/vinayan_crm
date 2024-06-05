@@ -6,7 +6,7 @@ const Material = require("../Models/materialMode");
 // @route   POST /api/finalProduct/addProduct
 // @access  Unprotected
 const addProduct = asynchHandler(async (req, res) => {
-  const { productName, productDes, materialList } = req.body;
+  const { productName, productDes, materialList ,productImage} = req.body;
   //   let matLis = JSON.parse(materialList);
 
   if (!productName || !productDes) {
@@ -45,6 +45,7 @@ const addProduct = asynchHandler(async (req, res) => {
     productDes,
     productMaterialList: finalMaterialList,
     approximateMaterialCost: approxMaterialCost,
+    productImage
   });
 
   const fullProduct = await Product.findById(product._id).populate(

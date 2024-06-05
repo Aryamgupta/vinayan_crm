@@ -109,7 +109,7 @@ const ProductForm = () => {
             onClick={() => fetchSingleProduct(product._id)}
           >
             <div className="p-4">
-              <img src={product.productName} style={{width:"100%",height:"200px",margin:"0 0 20px 0"}}/>
+              <img src={`http://localhost:5000${product.productImage}`} style={{height:"200px",margin:"0 auto 20px"}}/>
               <div className="text-md gap-4 font-semibold space-x-4">
                 <span style={{ fontWeight: "bold", color: "orange" }}>
                   Product Name:

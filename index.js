@@ -2,7 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require('cors');
 
-
+const bodyParser = require('body-parser');
+const uploadRoute = require('./config/upload');
 
 
 
@@ -14,7 +15,6 @@ dotenv.config();
 mongoDbConnect();
 // instance of express
 const app = express();
-
 
 
 const allowedOrigins = ['http://localhost:3000/'];
@@ -34,10 +34,20 @@ app.use(cors());
 // Define your routes
 app.options('*', cors());
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
+// Routes
+app.use('/api', uploadRoute);
+
 const userRoutes = require("./Routes/userRoutes");
 const materialRoutes = require("./Routes/productRoutes");
 const productRoutes = require("./Routes/finalProductRoutes");
 const orderRoutes = require("./Routes/orderRoutes")
+const emplyoeeRoutes = require("./Routes/employeeRoutes")
+const internalAllotmentRoutes = require("./Routes/internalAllotMentRoutes")
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 
 // to express the json data
@@ -54,6 +64,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/finalProduct", productRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/emplyoee",emplyoeeRoutes );
+app.use("/api/internalAllotement",internalAllotmentRoutes );
+
 
 const PORT = process.env.PORT || 5000; // deciding port
 

@@ -33,6 +33,14 @@ th {
 /* tr:hover {
   background-color: #f1f1f1;
 } */
+<<<<<<< HEAD
+=======
+
+/* th>tr:hover{
+  background-color: unset !important;
+} */
+
+>>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
 .main-heading {
   width: 90%;
   font-size: 35px;
