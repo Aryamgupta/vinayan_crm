@@ -19,7 +19,7 @@ function Sidebar() {
     // { path: "/Stock", icon: <TbListDetails size={22}/>, label: "Remaining stock" },
     { path: "/storemanagement", icon: <GrDatabase size={22}/>, label: "Store Management" },
     { path: "/orders", icon: <GrDatabase size={22}/>, label: "Order Management" },
-   
+    { path: "/empdetails", icon: <GrDatabase size={22}/>, label: "EmpDetails" },
    
     // { path: "/logout", icon: <MdExitToApp />, label: "Logout" },
     // Add other menu items here if needed
@@ -47,7 +47,7 @@ function Sidebar() {
             <li key={item.path} className="w-full">
               <NavLink
                 to={item.path}
-                className={`flex items-center justify-center bg-[#f8f8f8]  shadow-sm md-w-16 h-12  rounded-xl font-medium text-black duration-300 ease-in-out ${
+                className={`flex items-center justify-center bg-[#f8f8f8]  shadow-sm md-w-18 h-12  rounded-xl font-medium text-black duration-300 ease-in-out ${
                   pathname.includes(item.path) &&
                   'border border-stroke bg-[#fa983d]'
                   }`}

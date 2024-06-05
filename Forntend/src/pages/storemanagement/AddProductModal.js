@@ -99,18 +99,18 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
     const file = event.target.files[0];
     if (file) {
       // setSelectedFile(file);
-      console.log("yes i am herew");
+      console.log("yes i am herew")
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className=" fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
-      <div className="addModalMainDIv addModalA bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#fa983d] addModalA ">
+    <div className=" fixed top-5 left-12 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+      <div className="addModalMainDIv addModalA bg-white p-8 rounded-lg shadow-lg border-t-4 border-[#fa983d] addModalA ">
         <h2 className="text-md font-bold text-black pb-2">Add New Product</h2>
-        <div className="flex flex-wrap -mx-2 mb-4">
-          <div className="nameIpField  w-full row px-2 mb-2">
+        <div className="flex flex-wrap -mx-2 mb-4 font-semibold ">
+          <div className="nameIpField  w-full row px-2 mb-2 ">
             <label htmlFor="pdtName" className="block mb-1 col-3">
               Product Name:
             </label>
@@ -123,8 +123,8 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
             />
           </div>
         </div>
-        <div className="flex flex-wrap -mx-2 mb-4">
-          <div className=" nameIpField w-full  px-2 mb-2">
+        <div className="flex flex-wrap -mx-2 mb-4 ">
+          <div className=" nameIpField w-full  px-2 mb-2 font-semibold">
             <label htmlFor="pdtName" className="block mb-1">
               Product Description:
             </label>
@@ -137,7 +137,7 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
             ></textarea>
           </div>
         </div>
-        <div className="flex flex-wrap -mx-2 mb-4">
+        <div className="flex flex-wrap -mx-2 mb-4 font-semibold">
           <div className=" nameIpField w-full  px-2 mb-2">
             <label htmlFor="pdtName" className="block mb-1">
               Product Description:
@@ -192,13 +192,13 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-green-400 text-white rounded-md mr-2"
+            className="px-4 py-2 bg-green-400 text-white rounded-md mr-2 hover-none"
           >
             Add
           </button>
           <button
             onClick={handleCancel}
-            className="px-4 py-2 bg-red-500 text-white rounded-md"
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover-none"
           >
             Cancel
           </button>

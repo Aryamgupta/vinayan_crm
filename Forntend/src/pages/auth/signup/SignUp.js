@@ -51,17 +51,15 @@ const SignUp = () => {
         config
       );
 
-      if(data){
-        localStorage.setItem("token",data.token);
+      if (data) {
+        localStorage.setItem("token", data.token);
         toast.success("Successfully Sign Up.");
-        router("/records"); 
-      }
-      else{
+        router("/records");
+      } else {
         toast.danger("Sign Up Failed");
-        
       }
 
-     // Navigate to the sign-in page
+      // Navigate to the sign-in page
     } catch (error) {
       console.error("API call error:", error);
     } finally {
@@ -173,16 +171,21 @@ const SignUp = () => {
             </div>
             <div className="grid grid-cols-2 gap-x-2">
               <div className="col-span-1 flex-col flex gap-y-.5">
-                <label className="text-base   pb-2">Role</label>
-                <Input
+                <label className="text-base pb-2">Role</label>
+                <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  size="large"
-                  className="rounded border border-gray-600"
-                />
+                  className="rounded  border px-3 py-2"
+                >
+                  <option value="">Select Role</option>
+                  <option value="software">Software</option>
+                  <option value="hardware">Hardware</option>
+                  <option value="others">Others</option>
+                </select>
                 {errors.role && <p className="text-danger">{errors.role}</p>}
               </div>
+
               <div className="col-span-1 flex-col flex gap-y-.5">
                 <label className="text-base   pb-2">Phone Number</label>
                 <Input
@@ -230,7 +233,7 @@ const SignUp = () => {
                   className=" gap-x-2 px-6 py-1  whitespace-nowrap flex items-center text-white"
                   onClick={(e) => {
                     handleSubmit(e);
-                    router("/records")
+                    router("/records");
                   }}
                 >
                   Continue

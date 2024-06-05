@@ -31,10 +31,11 @@ const LayoutPage = ({ children }) => {
             style={{
               fontSize: "16px",
               width: 64,
-              height: 64,
+              height: 30,
             }}
           />
         </Header>
+        
 
         <Layout
           className={`${"p-4 h-[92vh]"} bg-gray w-full overflow-auto `}

@@ -113,7 +113,7 @@ const AddOrderModal = ({ isOpen, onSave, onCancel }) => {
             />
           </div>
         </div>
-        <div className="flex flex-wrap -mx-2 mb-4"></div>
+        <div className="flex flex-wrap -mx-2 mb-2"></div>
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}

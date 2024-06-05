@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import EditModel from "../../pages/records/EditModel";
 import AddModel from "../../pages/records/AddModel";
 import InModel from "../records/InModel";
-import { mockTableData } from "../../utils/data";
-import Card from "../../components/card/Card";
+// import { mockTableData } from "../../utils/data";
+// import Card from "../../components/card/Card";
 import { AppState } from "../../components/Context/context";
 import axios from "axios";
 import { useNavigate } from "react-router";
@@ -198,13 +198,9 @@ const DataTable = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between mb-4 mt-4 ">
-        <span className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3  inline-block">
-          Material Out
-        </span>
-
-        <div className="flex justify-end gap-4">
+    <div className="container mx-auto">
+      <div className="flex justify-end ">
+        <div className="space-x-2">
           <input
             type="text"
             placeholder="Search here"
@@ -241,20 +237,20 @@ const DataTable = () => {
           </button>
         </div>
       </div>
-      <div class="card-container flex flex-col gap-4 md:flex-row md:justify-between">
+      {/* <div class="card-container flex flex-col gap-4 md:flex-row md:justify-between">
         <Card />
         <Card />
         <Card />
         <Card />
-      </div>
+      </div> */}
 
-      <div className="overflow-x-auto text-center mt-6">
-        <table className="table-auto min-w-full border bg-white">
+      <div className="overflow-x-auto text-center ">
+        <table className="table-auto min-w-full  bg-white border-stroke">
           <thead className="tableHead">
-            <tr className="bg-gray-400">
+            <tr className="bg-gray-400 text-center">
               <th
                 onClick={() => handleSort("_id")}
-                className="px-4 py-2 cursor-pointer "
+                className="px-4 py-2 cursor-pointer  text-center "
               >
                 Item ID
               </th>
@@ -295,14 +291,14 @@ const DataTable = () => {
           <tbody>
             {visibleTableData.map((rowData, index) => (
               <tr key={index}>
-                <td className="border px-4 py-2">{rowData?._id}</td>
-                <td className="border px-4 py-2">{rowData?.pdtName}</td>
-                <td className="border px-4 py-2">{rowData?.pdtQuantity}</td>
-                <td className="border px-4 py-2">{rowData?.pdtCost}</td>
-                <td className="border px-4 py-2">{rowData.vendorName}</td>
+                <td className="border px-4 py-2 text-center">{rowData?._id}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtName}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtQuantity}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtCost}</td>
+                <td className="border px-4 py-2 text-center">{rowData.vendorName}</td>
 
-                <td className="border px-4 py-2">
-                  <div className="flex">
+                <td className="border px-4 py-2 ">
+                  <div className="flex ">
                     {/* <button
                       onClick={handleAdd}
                       className="px-3 py-1 bg-red-500 text-white border-stroke shadow-lg rounded-md mr-2"
@@ -317,7 +313,7 @@ const DataTable = () => {
                     /> */}
                     <button
                       onClick={() => handleEdit(rowData)}
-                      className="px-3 py-1 bg-red-500 text-white border-stroke shadow-lg rounded-md mr-2"
+                      className="px-3 py-1 bg-red-500 text-white border-stroke shadow-lg rounded-md mx-auto hover:bg-red-500"
                     >
                       Out
                     </button>

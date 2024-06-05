@@ -117,7 +117,7 @@ const AddModel = ({ isOpen, onSave, onCancel }) => {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-green-400 text-white rounded-md mr-2"
+            className="px-4 py-2 bg-green-500 text-white rounded-md mr-2 "
           >
             Add
           </button>

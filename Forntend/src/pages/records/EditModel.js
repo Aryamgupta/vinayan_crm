@@ -67,7 +67,7 @@ const EditModel = ({ isOpen, rowData, onSave, onCancel }) => {
           {" "}
           {/* Wrapper for flex layout */}
           {/* Label and input field for _id */}
-          <div className="w-full md:w-1/2 px-2 mb-2">
+          <div className="w-full md:w-1/2 px-2 mb-2 ">
             <label htmlFor="_id" className="block mb-1">
               _id:
             </label>
@@ -178,13 +178,13 @@ const EditModel = ({ isOpen, rowData, onSave, onCancel }) => {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-green-300 text-white rounded-md mr-2"
+            className="px-4 py-2 bg-green-500 text-white rounded-md mr-2 hover:bg-green-500"
           >
             Save
           </button>
           <button
             onClick={handleCancel}
-            className="px-4 py-2 bg-red-500 text-white rounded-md"
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-500"
           >
             Cancel
           </button>

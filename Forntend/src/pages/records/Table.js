@@ -233,27 +233,27 @@ const DataTable = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-2">
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         {/* <span className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3 inline-block">
              MaterialIn
         </span> */}
       </div>
-      <div className="Button-header flex justify-between mb-4 mt-4 border-stroke">
+      <div className="Button-header flex justify-between mb-2 mt-2">
         <input
           type="text"
           placeholder="Search here"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="px-4 py-2 border rounded-md mr-2"
+          className="border rounded-md w-1/11 h-10 text-center border-stroke mt-4 "
         />
-        <Invoice />
+        {/* <Invoice /> */}
         <div className="flex justify-end gap-4 w-full sm:w-1/4 md:w-1/3 flex-sm-col border-stroke">
           <button
             onClick={handleOpenAddModel} // Corrected function name
             style={{
               backgroundColor: "#fa983d",
-              padding: "4px 16px",
+              padding: "2px 12px",
               color: "#ffffff",
               borderRadius: "0.375rem",
             }}
@@ -270,19 +270,19 @@ const DataTable = () => {
 
           <button
             onClick={handleDownload}
-            className="bg-black text-white rounded-md font-bold shadow-md px-4 py-3 inline-block"
+            className="bg-black text-white rounded-md font-bold shadow-md px-4 py-2 inline-block hover:bg-black hover:text-white"
           >
             Download
           </button>
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border  text-center bg-white ">
-          <thead className="bg-black text-white">
-            <tr className="bg-gray-200">
+        <table className="table-auto w-full border bg-white ">
+          <thead className="bg-black text-white ">
+            <tr className="bg-gray-200 text-left ">
               <th
                 onClick={() => handleSort("ProductId")}
-                className="px-4 py-2 cursor-pointer"
+                className="px-4 py-2 cursor-pointer text-center"
               >
                 Product Id
               </th>
@@ -329,12 +329,12 @@ const DataTable = () => {
           <tbody>
             {visibleTableData.map((rowData, index) => (
               <tr key={rowData._id}>
-                <td className="border px-4 py-2">{rowData._id}</td>
-                <td className="border px-4 py-2">{rowData?.pdtName}</td>
-                <td className="border px-4 py-2">{rowData?.pdtQuantity}</td>
-                <td className="border px-4 py-2">{rowData?.pdtCost}</td>
-                <td className="border px-4 py-2">{rowData.vendorName}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 text-center">{rowData._id}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtName}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtQuantity}</td>
+                <td className="border px-4 py-2 text-center">{rowData?.pdtCost}</td>
+                <td className="border px-4 py-2 text-center">{rowData.vendorName}</td>
+                <td className="border px-4 py-2 text-center">
                   {formatDate(rowData.modifyDate)}
                 </td>
                 {/* <td className="border px-4 py-2 ">{rowData.Invoice}</td> */}
@@ -363,7 +363,7 @@ const DataTable = () => {
                   <div className="flex">
                     <button
                       onClick={() => handleEdit(rowData)}
-                      className="px-4 py-2 bg-gray text-black shadow-lg rounded-md mx-auto"
+                      className="px-4 py-2 bg-gray text-black shadow-lg rounded-md mx-auto hover:bg-gray"
                     >
                       Add
                     </button>
