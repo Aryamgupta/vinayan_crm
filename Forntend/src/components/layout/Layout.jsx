@@ -31,11 +31,8 @@ const LayoutPage = ({ children }) => {
             style={{
               fontSize: "16px",
               width: 64,
-<<<<<<< HEAD
               height: 30,
-=======
               height: 34,
->>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
             }}
           />
         </Header>

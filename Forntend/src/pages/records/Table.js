@@ -245,11 +245,11 @@ const DataTable = () => {
           placeholder="Search here"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-<<<<<<< HEAD
+
           className="border rounded-md w-1/11 h-10 text-center border-stroke mt-4 "
-=======
-          className="px-4 py-2 border rounded-md mr-2 w-1/4 h-10"
->>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
+
+      
+
         />
         {/* <Invoice /> */}
         <div className="flex justify-end gap-4 w-full sm:w-1/4 md:w-1/3 flex-sm-col border-stroke">
@@ -333,21 +333,12 @@ const DataTable = () => {
           <tbody>
             {visibleTableData.map((rowData, index) => (
               <tr key={rowData._id}>
-<<<<<<< HEAD
-                <td className="border px-4 py-2 text-center">{rowData._id}</td>
-                <td className="border px-4 py-2 text-center">{rowData?.pdtName}</td>
-                <td className="border px-4 py-2 text-center">{rowData?.pdtQuantity}</td>
-                <td className="border px-4 py-2 text-center">{rowData?.pdtCost}</td>
-                <td className="border px-4 py-2 text-center">{rowData.vendorName}</td>
-                <td className="border px-4 py-2 text-center">
-=======
                 <td className="border px-4">{rowData._id}</td>
                 <td className="border px-4 py-2">{rowData?.pdtName}</td>
                 <td className="border px-4 py-2">{rowData?.pdtQuantity}</td>
                 <td className="border px-4 py-2">{rowData?.pdtCost}</td>
                 <td className="border px-4 py-2">{rowData.vendorName}</td>
                 <td className="border px-4 py-2">
->>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
                   {formatDate(rowData.modifyDate)}
                 </td>
                 {/* <td className="border px-4 py-2 ">{rowData.Invoice}</td> */}

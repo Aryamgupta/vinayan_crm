@@ -160,18 +160,23 @@ const AddempDetails = ({ isOpen, onSave, onCancel }) => {
                 className="border px-4 py-2 rounded-md col-6"
               />
             </div>
-            <div className="nameIpField   row px-2 mb-2 ">
-              <label htmlFor="empDept" className="block mb-1 col-3">
-                Department:
-              </label>
-              <input
-                type="text"
-                id="empDept"
-                value={empDept}
-                onChange={(e) => setEmpDept(e.target.value)}
-                className="border px-4 py-2 rounded-md col-6"
-              />
-            </div>
+            <div className="nameIpField row px-2 mb-2">
+  <label htmlFor="empDept" className="block mb-1 col-3">
+    Department:
+  </label>
+  <select
+    id="empDept"
+    value={empDept}
+    onChange={(e) => setEmpDept(e.target.value)}
+    className="border px-4 py-2 rounded-md col-6"
+  >
+    <option value="">Select Department</option>
+    <option value="Software">Software</option>
+    <option value="Hardware">Hardware</option>
+    <option value="Others">Others</option>
+  </select>
+</div>
+
           </div>
         </div>
 

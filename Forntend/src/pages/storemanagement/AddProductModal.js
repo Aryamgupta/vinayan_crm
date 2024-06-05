@@ -56,7 +56,7 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
       alert("Please fill in all fields.");
       return;
     }
-    if (selected.length == 0) {
+    if (selected.length === 0) {
       alert("No Material Selected");
       return;
     }
@@ -70,7 +70,7 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
       productName,
       productDes,
       materialList: selectedMaterialsArray,
-      productImage:uploadedImageUrl
+      productImage: uploadedImageUrl,
     };
 
     const config = {
@@ -92,7 +92,8 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
         onCancel();
         setProductName("");
         setProductDes("");
-        setSelectedMaterials([]);
+        setSelectedMaterials({});
+        setUploadedImageUrl(null);
       })
       .catch((error) => {
         console.error("Error saving data:", error);
@@ -102,22 +103,15 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
   const handleCancel = () => {
     onCancel();
     // Reset state if cancel is clicked
-
     setProductName("");
     setProductDes("");
+    setSelectedMaterials({});
+    setUploadedImageUrl(null);
   };
 
-<<<<<<< HEAD
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // setSelectedFile(file);
-      console.log("yes i am herew")
-    }
-=======
   const handleImageUpload = async (event) => {
     const selectedFile = event.target.files[0];
-   
+
     const formData = new FormData();
     formData.append("image", selectedFile);
 
@@ -130,7 +124,7 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
     };
 
     axios
-      .post("http://localhost:5000/api/upload",formData, config)
+      .post("http://localhost:5000/api/upload", formData, config)
       .then((response) => {
         setUploadedImageUrl(response.data.filePath);
         // setUploadedImageUrl("");
@@ -138,7 +132,6 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
       .catch((error) => {
         console.error("Error saving data:", error);
       });
->>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
   };
 
   if (!isOpen) return null;
@@ -180,10 +173,7 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
             <label htmlFor="pdtName" className="block mb-1">
               Product Description:
             </label>
-            <input
-              type="file"
-              onChange={(e)=>handleImageUpload(e)}
-            />
+            <input type="file" onChange={(e) => handleImageUpload(e)} />
           </div>
         </div>
 
@@ -302,12 +292,8 @@ const AddProductModal = ({ isOpen, onSave, onCancel }) => {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleSave}
-<<<<<<< HEAD
-            className="px-4 py-2 bg-green-400 text-white rounded-md mr-2 hover-none"
-=======
             className="px-4 py-2 bg-green-400 text-white rounded-md mr-2"
             disabled={!uploadedImageUrl}
->>>>>>> 7c5cb7a7209ae656adf54ce33155bfd63a5e8242
           >
             Add
           </button>
