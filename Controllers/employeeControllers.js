@@ -162,13 +162,13 @@ const verifyAvailablity = async function (materialId, materialQuantity) {
 // @route   PUT /api/emplyoee/allotMaterial/:empId
 // @access  protect
 const deAllocateMaterial = asynchHandler(async (req, res) => {
-  let { allotId } = req.body;
+  let  {allotId}  = req.body;
   let empId = req.params.empId;
 
-  if (!allotId) {
-    res.status(400);
-    throw new Error("No Id is provided");
-  }
+  // if (!allotId || !empId) {
+  //   res.status(400);
+  //   throw new Error("No Id is provided");
+  // }
 
   let internalAllot = await InternalAllotment.findById(allotId);
 
